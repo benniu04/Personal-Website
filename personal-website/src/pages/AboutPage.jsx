@@ -34,7 +34,7 @@ function AboutPage() {
               <div className="flex flex-col md:flex-row gap-8 mb-8">
                 <div className="flex-shrink-0">
                   <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-slate-700 flex items-center justify-center">
-                    <img src="/public/profile-pic.jpeg" alt="Benjamin Niu" className="w-full h-full object-cover rounded-2xl" />
+                    <img src="/images/profile-pic.jpeg" alt="Benjamin Niu" className="w-full h-full object-cover rounded-2xl" />
                   </div>
                 </div>
                 
