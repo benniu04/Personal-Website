@@ -16,9 +16,9 @@ export const projects = [
     slug: 'nema',
     title: 'NEMA',
     blurb: 'A streaming platform dedicated for smaller indie filmmakers to showcase their work.',
-    cover: '/images/nema-home-page.png',
+    cover: '/images/nema-home.png',
     description: 'Co-creating NEMA, a streaming platform dedicated for smaller indie filmmakers to showcase their work.',
-    url: 'https://github.com/benniu04/NEMA',
+    url: 'https://nemaa.netlify.app/',
     meta: {
       role: 'Full Stack Developer',
       timeline: 'In Progress',
@@ -37,4 +37,17 @@ export const projects = [
       tools: '...'
     }
   },
+  {
+    slug:'voice-agent',
+    title: 'Voice Agent',
+    blurb: 'A voice agent that changes based on the emotional sentiment of the speaker.',
+    cover: '/images/voice-agent.png',
+    description: 'A full-stack web application that performs real-time audio transcription and visualizes the speakers emotional sentiment through a beautiful, dynamic Perlin noise field.',
+    url: 'https://voice-agent-ruddy.vercel.app/',
+    meta: {
+      role: 'Personal Project',
+      timeline: 'In Progress',
+      tools: 'React, Node.js, Tailwind CSS, Vercel, OpenAI, Perlin noise, Python, FastAPI'
+    }
+  }
 ] 

@@ -33,10 +33,15 @@ function HomePage() {
                 <div>
                   <h3 className="text-xl font-semibold text-slate-300 mb-4">DevOps/Cloud</h3>
                   <div className="flex flex-wrap gap-3">
-                    <span className="bg-slate-800/50 border border-slate-600 text-slate-300 px-4 py-2 rounded-full text-sm">AWS</span>
+                    <span className="bg-slate-800/50 border border-slate-600 text-slate-300 px-4 py-2 rounded-full text-sm">S3</span>
+                    <span className="bg-slate-800/50 border border-slate-600 text-slate-300 px-4 py-2 rounded-full text-sm">CloudFront</span>
+                    <span className="bg-slate-800/50 border border-slate-600 text-slate-300 px-4 py-2 rounded-full text-sm">EC2</span>
                     <span className="bg-slate-800/50 border border-slate-600 text-slate-300 px-4 py-2 rounded-full text-sm">Github Actions</span>
                     <span className="bg-slate-800/50 border border-slate-600 text-slate-300 px-4 py-2 rounded-full text-sm">CI/CD</span>
                     <span className="bg-slate-800/50 border border-slate-600 text-slate-300 px-4 py-2 rounded-full text-sm">Git</span>
+                    <span className="bg-slate-800/50 border border-slate-600 text-slate-300 px-4 py-2 rounded-full text-sm">Vercel</span>
+                    <span className="bg-slate-800/50 border border-slate-600 text-slate-300 px-4 py-2 rounded-full text-sm">Netlify</span>
+                    <span className="bg-slate-800/50 border border-slate-600 text-slate-300 px-4 py-2 rounded-full text-sm">Render</span>
                   </div>
                 </div>
                 <div>
