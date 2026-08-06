@@ -1,70 +1,34 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-    darkMode: ["class"],
-    content: [
+  content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-  	extend: {
-  		backgroundImage: {
-  			'gradient-conic': 'conic-gradient(var(--conic-position), var(--tw-gradient-stops))'
-  		},
-  		colors: {
-  			slate: {
-  				'950': '#020617'
-  			},
-  			cyan: {
-  				'400': '#22d3ee',
-  				'500': '#06b6d4'
-  			},
-  			background: 'hsl(var(--background))',
-  			foreground: 'hsl(var(--foreground))',
-  			card: {
-  				DEFAULT: 'hsl(var(--card))',
-  				foreground: 'hsl(var(--card-foreground))'
-  			},
-  			popover: {
-  				DEFAULT: 'hsl(var(--popover))',
-  				foreground: 'hsl(var(--popover-foreground))'
-  			},
-  			primary: {
-  				DEFAULT: 'hsl(var(--primary))',
-  				foreground: 'hsl(var(--primary-foreground))'
-  			},
-  			secondary: {
-  				DEFAULT: 'hsl(var(--secondary))',
-  				foreground: 'hsl(var(--secondary-foreground))'
-  			},
-  			muted: {
-  				DEFAULT: 'hsl(var(--muted))',
-  				foreground: 'hsl(var(--muted-foreground))'
-  			},
-  			accent: {
-  				DEFAULT: 'hsl(var(--accent))',
-  				foreground: 'hsl(var(--accent-foreground))'
-  			},
-  			destructive: {
-  				DEFAULT: 'hsl(var(--destructive))',
-  				foreground: 'hsl(var(--destructive-foreground))'
-  			},
-  			border: 'hsl(var(--border))',
-  			input: 'hsl(var(--input))',
-  			ring: 'hsl(var(--ring))',
-  			chart: {
-  				'1': 'hsl(var(--chart-1))',
-  				'2': 'hsl(var(--chart-2))',
-  				'3': 'hsl(var(--chart-3))',
-  				'4': 'hsl(var(--chart-4))',
-  				'5': 'hsl(var(--chart-5))'
-  			}
-  		},
-  		borderRadius: {
-  			lg: 'var(--radius)',
-  			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
-  		}
-  	}
+    extend: {
+      colors: {
+        cream: '#F6EBE0',      // page background
+        blush: '#F1DFD1',      // alternate section band
+        parchment: '#FBF5EE',  // card surface
+        ink: '#43261A',        // headings on light
+        cocoa: '#5F4037',      // body text on light, footer background
+        clay: '#8F6A58',       // muted text on light
+        rust: '#A24A21',       // accent
+        'rust-deep': '#7E3616',
+        ember: '#5C2812',      // darkest hero shade
+        linen: '#EEDFD1',      // text on dark surfaces
+        hairline: '#E3D0BF',   // borders on light
+        'hairline-dark': '#7A584A', // borders on cocoa
+      },
+      fontFamily: {
+        display: ['Sentient', 'Georgia', 'serif'],
+        sans: ['"Schibsted Grotesk"', 'system-ui', 'sans-serif'],
+        mono: ['"Spline Sans Mono"', 'ui-monospace', 'monospace'],
+      },
+      maxWidth: {
+        site: '72rem',
+      },
+    },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [],
 }
