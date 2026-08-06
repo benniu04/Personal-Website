@@ -24,6 +24,7 @@ export default {
         display: ['Sentient', 'Georgia', 'serif'],
         sans: ['"Schibsted Grotesk"', 'system-ui', 'sans-serif'],
         mono: ['"Spline Sans Mono"', 'ui-monospace', 'monospace'],
+        pixel: ['Silkscreen', '"Spline Sans Mono"', 'ui-monospace', 'monospace'],
       },
       maxWidth: {
         site: '72rem',
