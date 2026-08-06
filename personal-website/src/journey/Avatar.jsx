@@ -92,9 +92,10 @@ export function Avatar() {
     )
     sections.forEach((sec) => observer.observe(sec))
     render()
+    const state = stateRef.current
     return () => {
       observer.disconnect()
-      window.clearTimeout(stateRef.current.idleTimer)
+      window.clearTimeout(state.idleTimer)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reduce])

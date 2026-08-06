@@ -1,5 +1,6 @@
 import { ChapterNav } from './ChapterNav'
 import { Avatar } from './Avatar'
+import { KonamiConfetti } from './KonamiConfetti'
 import { TitleScene } from './scenes/TitleScene'
 import { OriginScene } from './scenes/OriginScene'
 import { BostonScene } from './scenes/BostonScene'
@@ -35,6 +36,7 @@ export function JourneyPage() {
 
       <ChapterNav />
       <Avatar />
+      <KonamiConfetti />
 
       <main>
         <TitleChapter scene={<TitleScene />} />

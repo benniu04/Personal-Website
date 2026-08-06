@@ -36,10 +36,11 @@ export function ChapterNav() {
       if (e.key === 'Escape') setMapOpen(false)
     }
     window.addEventListener('keydown', onKey)
+    const mapButton = mapButtonRef.current
     return () => {
       document.body.style.overflow = ''
       window.removeEventListener('keydown', onKey)
-      mapButtonRef.current?.focus()
+      mapButton?.focus()
     }
   }, [mapOpen])
 
