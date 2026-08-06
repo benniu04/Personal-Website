@@ -129,12 +129,23 @@
     animation: px-bob 0.9s steps(2, jump-none) infinite;
   }
 
+  /* Softer, slower blink for persistent prompts */
+  .animate-px-blink-slow {
+    animation: px-blink-slow 1.6s steps(1) infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .animate-px-blink,
+    .animate-px-blink-slow,
     .animate-px-bob {
       animation: none;
     }
   }
+}
+
+@keyframes px-blink-slow {
+  0%, 70% { opacity: 1; }
+  71%, 100% { opacity: 0.45; }
 }
 
 @keyframes px-blink {

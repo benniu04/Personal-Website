@@ -13,10 +13,10 @@ function DetailFooter() {
           © {new Date().getFullYear()} {CONTACT.fullName}. Crafted with curiosity and care.
         </p>
         <Link
-          to="/#projects"
+          to="/journey#projects"
           className="font-pixel text-[0.6875rem] uppercase tracking-[0.1em] text-rust hover:text-rust-deep"
         >
-          ← Return to map
+          Scroll the 2D journey
         </Link>
       </div>
     </footer>
@@ -38,8 +38,8 @@ function ProjectDetail() {
           <h1 className="font-display font-light text-4xl text-ink">
             This quest doesn't exist.
           </h1>
-          <Link to="/#projects" className="pixel-btn-parchment mt-10">
-            ← Return to map
+          <Link to="/" className="pixel-btn-parchment mt-10">
+            ← Back to the world
           </Link>
         </div>
       </main>
@@ -57,10 +57,10 @@ function ProjectDetail() {
         <section className="border-b-2 border-hairline">
           <div className="max-w-site mx-auto px-6 pt-16 pb-14 md:pt-24 md:pb-16">
             <Link
-              to="/#projects"
+              to="/"
               className="font-pixel text-[0.6875rem] uppercase tracking-[0.1em] text-clay hover:text-rust transition-colors"
             >
-              ← Return to map
+              ← Back to the world
             </Link>
             <div className="mt-10 flex items-start gap-6">
               <div className="hidden sm:block border-2 border-ink bg-blush p-3 shrink-0">

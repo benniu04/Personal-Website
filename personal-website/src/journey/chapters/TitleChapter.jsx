@@ -1,4 +1,5 @@
 import { motion } from 'motion/react'
+import { Link } from 'react-router-dom'
 import { HERO, CONTACT } from '../../data/about'
 
 const rise = (delay) => ({
@@ -47,6 +48,9 @@ export function TitleChapter({ scene = null }) {
             <a href="#origin" className="pixel-btn-rust">
               ▶ Start journey
             </a>
+            <Link to="/" className="pixel-btn-parchment">
+              ◆ Enter the 3D world
+            </Link>
             <a href={`mailto:${CONTACT.email}`} className="pixel-btn-parchment">
               Get in touch
             </a>
