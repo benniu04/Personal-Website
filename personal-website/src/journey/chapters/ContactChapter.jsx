@@ -1,4 +1,5 @@
 import { ScrollReveal } from '../../components/ScrollReveal'
+import { CampfireEnsemble } from '../scenes/CampfireScene'
 import { CONTACT } from '../../data/about'
 import { CHAPTERS } from './meta'
 
@@ -17,7 +18,7 @@ export function ContactChapter({ scene = null }) {
       )}
 
       <div className="relative z-10 flex-1 flex items-center">
-        <div className="max-w-site mx-auto px-6 py-24 w-full">
+        <div className="max-w-site mx-auto px-6 py-24 w-full grid lg:grid-cols-[minmax(0,1fr)_auto] gap-16 items-end">
           <ScrollReveal>
             <p className="font-pixel text-xs md:text-sm uppercase tracking-[0.1em] text-linen/80 mb-4">
               Final chapter · Save point
@@ -56,6 +57,10 @@ export function ContactChapter({ scene = null }) {
               </a>
             </div>
           </ScrollReveal>
+
+          <div className="hidden lg:block pb-2">
+            <CampfireEnsemble />
+          </div>
         </div>
       </div>
 

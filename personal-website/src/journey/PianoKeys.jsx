@@ -26,6 +26,8 @@ const BLACK_KEYS = [
 export function PianoKeys() {
   const audioRef = useRef(null)
   const buttonsRef = useRef({})
+  const groupRef = useRef(null)
+  const visibleRef = useRef(false)
 
   const play = (freq) => {
     const AudioCtx = window.AudioContext || window.webkitAudioContext
@@ -48,10 +50,17 @@ export function PianoKeys() {
   }
 
   useEffect(() => {
+    // Physical keys only play while the piano is actually on screen.
+    const observer = new IntersectionObserver(([entry]) => {
+      visibleRef.current = entry.isIntersecting
+    })
+    if (groupRef.current) observer.observe(groupRef.current)
+
     const byKey = new Map(
       [...WHITE_KEYS, ...BLACK_KEYS].map((k) => [k.key, k])
     )
     const onKeyDown = (e) => {
+      if (!visibleRef.current) return
       if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return
       const hit = byKey.get(e.key.toLowerCase())
       if (!hit) return
@@ -63,7 +72,10 @@ export function PianoKeys() {
       }
     }
     window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('keydown', onKeyDown)
+    }
   }, [])
 
   useEffect(() => () => audioRef.current?.close(), [])
@@ -73,7 +85,7 @@ export function PianoKeys() {
       <p className="font-pixel text-[0.6875rem] uppercase tracking-[0.1em] text-rust mb-3">
         The piano actually plays · try A–K
       </p>
-      <div className="relative inline-flex" role="group" aria-label="Playable piano, one octave">
+      <div ref={groupRef} className="relative inline-flex" role="group" aria-label="Playable piano, one octave">
         {WHITE_KEYS.map((k) => (
           <button
             key={k.note}

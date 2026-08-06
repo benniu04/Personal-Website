@@ -23,7 +23,7 @@ export function TitleChapter({ scene = null }) {
       )}
 
       <div className="relative z-10 flex-1 flex items-center">
-        <div className="max-w-site mx-auto px-6 py-28 w-full text-center">
+        <div className="max-w-site mx-auto px-6 py-12 md:py-16 w-full text-center">
           <motion.p {...rise(0)} className="font-pixel text-xs md:text-sm uppercase tracking-[0.1em] text-rust mb-6">
             {HERO.eyebrow}
           </motion.p>
