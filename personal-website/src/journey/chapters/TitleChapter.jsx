@@ -57,7 +57,7 @@ export function TitleChapter({ scene = null }) {
       <motion.a
         {...rise(0.7)}
         href="#origin"
-        className="relative z-10 mx-auto mb-8 flex flex-col items-center gap-1 text-ink"
+        className="relative z-10 mx-auto mb-8 flex flex-col items-center gap-1 text-ink bg-cream/90 border-2 border-ink px-4 py-2.5 shadow-[3px_3px_0_0_#43261A]"
         aria-label="Scroll to begin"
       >
         <span className="font-pixel text-[0.6875rem] uppercase tracking-[0.1em]">Scroll to begin</span>

@@ -1,4 +1,7 @@
 import { ChapterNav } from './ChapterNav'
+import { Avatar } from './Avatar'
+import { TitleScene } from './scenes/TitleScene'
+import { CampfireScene } from './scenes/CampfireScene'
 import { TitleChapter } from './chapters/TitleChapter'
 import { OriginChapter } from './chapters/OriginChapter'
 import { BostonChapter } from './chapters/BostonChapter'
@@ -29,9 +32,10 @@ export function JourneyPage() {
       </a>
 
       <ChapterNav />
+      <Avatar />
 
       <main>
-        <TitleChapter />
+        <TitleChapter scene={<TitleScene />} />
         <OriginChapter />
         <BostonChapter />
         <ExperienceChapter />
@@ -40,7 +44,7 @@ export function JourneyPage() {
         <HobbiesChapter />
         <SetupChapter />
         <CommitsChapter />
-        <ContactChapter />
+        <ContactChapter scene={<CampfireScene />} />
       </main>
     </>
   )
