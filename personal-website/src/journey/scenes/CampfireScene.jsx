@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { SceneCanvas } from '../../pixel/SceneCanvas'
+import { StaticSprite } from '../../pixel/StaticSprite'
 import { drawStars } from '../../pixel/generators'
 import { drawSprite } from '../../pixel/drawSprite'
 import { AVATAR_SIT, CAMPFIRE_FRAMES, MONUMENT } from '../../pixel/sprites'
@@ -45,24 +46,6 @@ function Campfire() {
   }, [reduce])
 
   return <canvas ref={canvasRef} width={16} height={11} className="pixelated w-24 md:w-28" aria-hidden="true" />
-}
-
-function StaticSprite({ map, className }) {
-  const canvasRef = useRef(null)
-  useEffect(() => {
-    const ctx = canvasRef.current.getContext('2d')
-    ctx.imageSmoothingEnabled = false
-    drawSprite(ctx, map, 0, 0, 1)
-  }, [map])
-  return (
-    <canvas
-      ref={canvasRef}
-      width={map[0].length}
-      height={map.length}
-      className={`pixelated ${className}`}
-      aria-hidden="true"
-    />
-  )
 }
 
 // Save-point backdrop: stars over the dusk gradient, the traveler sitting by

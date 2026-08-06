@@ -1,6 +1,8 @@
 import { ChapterNav } from './ChapterNav'
 import { Avatar } from './Avatar'
 import { TitleScene } from './scenes/TitleScene'
+import { OriginScene } from './scenes/OriginScene'
+import { BostonScene } from './scenes/BostonScene'
 import { CampfireScene } from './scenes/CampfireScene'
 import { TitleChapter } from './chapters/TitleChapter'
 import { OriginChapter } from './chapters/OriginChapter'
@@ -36,8 +38,8 @@ export function JourneyPage() {
 
       <main>
         <TitleChapter scene={<TitleScene />} />
-        <OriginChapter />
-        <BostonChapter />
+        <OriginChapter scene={<OriginScene />} />
+        <BostonChapter scene={<BostonScene />} />
         <ExperienceChapter />
         <ProjectsChapter />
         <ToolkitChapter />

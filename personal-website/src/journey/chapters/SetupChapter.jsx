@@ -2,7 +2,11 @@ import { useState } from 'react'
 import { Chapter } from '../Chapter'
 import { DialogPanel } from '../DialogPanel'
 import { ScrollReveal } from '../../components/ScrollReveal'
+import { StaticSprite } from '../../pixel/StaticSprite'
+import { TOWER_PC, MACBOOK } from '../../pixel/sprites'
 import { SETUPS } from '../../data/about'
+
+const MACHINE_SPRITES = { pc: TOWER_PC, macbook: MACBOOK }
 
 // Chapter 7 — the hardware, presented as a machine-select screen.
 export function SetupChapter({ scene = null }) {
@@ -18,7 +22,7 @@ export function SetupChapter({ scene = null }) {
       className="bg-cream"
     >
       <ScrollReveal>
-        <div className="max-w-2xl">
+        <div className="max-w-2xl lg:max-w-none lg:grid lg:grid-cols-[minmax(0,42rem)_1fr] lg:gap-16 lg:items-start"><div>
           <div
             role="tablist"
             aria-label="Choose a machine"
@@ -63,6 +67,19 @@ export function SetupChapter({ scene = null }) {
               </div>
             </div>
           </DialogPanel>
+          </div>
+
+          {/* the selected machine, standing on its desk */}
+          <div className="hidden lg:flex flex-col items-center gap-3 pt-16">
+            <StaticSprite
+              map={MACHINE_SPRITES[activeSetup]}
+              className={activeSetup === 'pc' ? 'w-36' : 'w-56'}
+            />
+            <div className="w-64 h-2 bg-cocoa border-2 border-ink" aria-hidden="true" />
+            <p className="font-pixel text-[0.6875rem] uppercase tracking-[0.1em] text-clay">
+              ▶ {setup.label} selected
+            </p>
+          </div>
         </div>
       </ScrollReveal>
     </Chapter>
