@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import { VoxelModel } from './VoxelModel'
@@ -19,9 +19,15 @@ import {
   TENNIS_NET_MODEL,
   GRASS_MODEL,
   FLOWER_MODEL,
+  BUSH_MODEL,
+  ROCK_MODEL,
+  MUSHROOM_MODEL,
+  FENCE_MODEL,
   officeModel,
   arcadeModel,
 } from './models'
+import { Sky } from './Sky'
+import { Ground } from './Ground'
 import { solid, translate, merge } from './voxel'
 import { seeded } from '../pixel/generators'
 import { STATIONS, WORLD_BOUNDS } from './stations'
@@ -72,9 +78,38 @@ function Scatter() {
       const model = rand() < 0.35 ? FLOWER_MODEL : GRASS_MODEL
       out.push(...translate(model, x, 0, z))
     }
+    // denser dressing: bushes, rocks, the odd mushroom
+    for (let i = 0; i < 55; i++) {
+      const x = Math.round((WORLD_BOUNDS.minX + rand() * (WORLD_BOUNDS.maxX - WORLD_BOUNDS.minX)) / 0.3)
+      const z = Math.round((WORLD_BOUNDS.minZ + rand() * (WORLD_BOUNDS.maxZ - WORLD_BOUNDS.minZ)) / 0.3)
+      const roll = rand()
+      const model = roll < 0.45 ? BUSH_MODEL : roll < 0.8 ? ROCK_MODEL : MUSHROOM_MODEL
+      out.push(...translate(model, x, 0, z))
+    }
     return out
   }, [])
   return <VoxelModel voxels={voxels} size={0.3} castShadow={false} />
+}
+
+// Amber lantern by each station — reads brighter as dusk falls.
+function Lamp({ position }) {
+  return (
+    <group position={position}>
+      <mesh position={[0, 1.1, 0]} castShadow>
+        <boxGeometry args={[0.18, 2.2, 0.18]} />
+        <meshStandardMaterial color="#43261A" roughness={1} />
+      </mesh>
+      <mesh position={[0, 2.4, 0]}>
+        <boxGeometry args={[0.45, 0.5, 0.45]} />
+        <meshStandardMaterial
+          color="#F2B84B"
+          emissive="#E8853A"
+          emissiveIntensity={1.3}
+          roughness={0.6}
+        />
+      </mesh>
+    </group>
+  )
 }
 
 function ScatteredPines() {
@@ -93,17 +128,22 @@ function ScatteredPines() {
 
 // Clickable wrapper: any station prop opens its story panel. The floating
 // label only shows when the player is nearby, so the horizon stays clean.
+// Visibility is React state (it flips rarely) — inline-style poking doesn't
+// survive drei Html's portal re-renders.
 function Station({ id, children, labelHeight = 4.6 }) {
   const { setOpenPanel, playerRef } = useWorld()
-  const labelRef = useRef(null)
+  const [labelVisible, setLabelVisible] = useState(false)
+  const visibleRef = useRef(false)
   const station = STATIONS.find((s) => s.id === id)
 
   useFrame(() => {
-    const el = labelRef.current
-    if (!el) return
     const player = playerRef.current
     const dist = Math.hypot(player.x - station.pos[0], player.z - station.pos[2])
-    el.style.opacity = dist < 15 ? '1' : '0'
+    const near = dist < 15
+    if (near !== visibleRef.current) {
+      visibleRef.current = near
+      setLabelVisible(near)
+    }
   })
 
   return (
@@ -116,12 +156,13 @@ function Station({ id, children, labelHeight = 4.6 }) {
       onPointerOver={() => (document.body.style.cursor = 'pointer')}
       onPointerOut={() => (document.body.style.cursor = 'auto')}
     >
-      <Html position={[0, labelHeight, 0]} center zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
-        <p
-          ref={labelRef}
-          style={{ transition: 'opacity 0.5s' }}
-          className="font-pixel text-[0.625rem] uppercase tracking-[0.08em] text-ink bg-parchment/95 border-2 border-ink px-2 py-1 whitespace-nowrap shadow-[2px_2px_0_0_#43261A]"
-        >
+      <Html
+        position={[0, labelHeight, 0]}
+        center
+        zIndexRange={[10, 0]}
+        style={{ pointerEvents: 'none', opacity: labelVisible ? 1 : 0, transition: 'opacity 0.5s' }}
+      >
+        <p className="font-pixel text-[0.625rem] uppercase tracking-[0.08em] text-ink bg-parchment/95 border-2 border-ink px-2 py-1 whitespace-nowrap shadow-[2px_2px_0_0_#43261A]">
           {station.label}
         </p>
       </Html>
@@ -144,20 +185,32 @@ const SETUP_DESK = merge(
 export function World() {
   return (
     <>
-      <color attach="background" args={['#F6EBE0']} />
       <fog attach="fog" args={['#F6EBE0', 26, 85]} />
-      <ambientLight intensity={0.85} color="#FFF6EA" />
-      <hemisphereLight args={['#FFF6EA', '#C9A188', 0.4]} />
-
-      {/* ground */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -58]} receiveShadow>
-        <planeGeometry args={[80, 180]} />
-        <meshStandardMaterial color="#F1DFD1" roughness={1} />
-      </mesh>
+      <Sky />
+      <Ground />
 
       <PathTiles />
       <Scatter />
       <ScatteredPines />
+
+      {/* lanterns light the way, alternating sides of the path */}
+      {STATIONS.map((station, i) => (
+        <Lamp
+          key={station.id}
+          position={[station.pos[0] + (i % 2 ? -2.6 : 2.6), 0, station.pos[2] + 2.4]}
+        />
+      ))}
+
+      {/* fence line along the Connecticut yard */}
+      <VoxelModel voxels={FENCE_MODEL} size={0.2} position={[-11.4, 0, -16.6]} />
+      <VoxelModel voxels={FENCE_MODEL} size={0.2} position={[-9.2, 0, -16.6]} />
+      <VoxelModel voxels={FENCE_MODEL} size={0.2} position={[-7, 0, -16.6]} />
+
+      {/* hand-placed accents */}
+      <VoxelModel voxels={ROCK_MODEL} size={0.4} position={[10.5, 0, -59]} />
+      <VoxelModel voxels={ROCK_MODEL} size={0.3} position={[-8.5, 0, -100]} rotation={[0, 0.7, 0]} />
+      <VoxelModel voxels={MUSHROOM_MODEL} size={0.3} position={[-10.6, 0, -74]} />
+      <VoxelModel voxels={MUSHROOM_MODEL} size={0.22} position={[-10, 0, -74.6]} />
 
       <Station id="welcome" labelHeight={4}>
         <VoxelModel voxels={SIGNPOST_MODEL} size={0.22} />

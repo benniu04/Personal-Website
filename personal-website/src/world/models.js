@@ -156,6 +156,41 @@ export const TENNIS_NET_MODEL = merge(
   translate(solid({ w: 16, h: 1, d: 1, c: '#43261A' }), 0, 5, 0)
 )
 
+// Puffy sky cloud (rendered semi-large, drifts overhead).
+export const CLOUD_MODEL = paint(
+  [[-4, 4], [0, 2], [-2, 2], '#FFF9F0'],
+  [[-6, -3], [0, 1], [-1, 1], '#FFF9F0'],
+  [[3, 6], [0, 1], [-1, 2], '#FFF9F0'],
+  [[-2, 3], [2, 3], [-1, 1], '#FFF9F0']
+)
+
+// Two-tone bush.
+export const BUSH_MODEL = paint(
+  [[-2, 2], [0, 2], [-2, 2], '#6F7F4E'],
+  [[-1, 2], [1, 3], [-1, 1], '#96A468']
+)
+
+// Squat rock.
+export const ROCK_MODEL = paint(
+  [[-2, 1], [0, 2], [-1, 1], '#8F6A58'],
+  [[-1, 1], [1, 3], [-1, 1], '#C9A188']
+)
+
+// Little mushroom: cream stem, rust cap.
+export const MUSHROOM_MODEL = paint(
+  [[-1, 1], [0, 2], [-1, 1], '#FBF5EE'],
+  [[-2, 2], [2, 3], [-2, 2], '#A24A21'],
+  [[-1, 1], [3, 4], [-1, 1], '#A24A21']
+)
+
+// One fence segment: two posts + two rails, runs along x.
+export const FENCE_MODEL = merge(
+  solid({ w: 1, h: 5, d: 1, c: '#5F4037', x: -5 }),
+  solid({ w: 1, h: 5, d: 1, c: '#5F4037', x: 5 }),
+  translate(solid({ w: 11, h: 1, d: 1, c: '#8F6A58' }), 0, 3, 0),
+  translate(solid({ w: 11, h: 1, d: 1, c: '#8F6A58' }), 0, 1, 0)
+)
+
 // Little tufts of grass / flowers to scatter around.
 export const GRASS_MODEL = [
   { x: 0, y: 0, z: 0, c: '#96A468' },
