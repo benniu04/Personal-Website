@@ -7,6 +7,12 @@
     scroll-behavior: smooth;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
   body {
     @apply bg-cream text-cocoa font-sans antialiased;
   }
@@ -14,6 +20,12 @@
   ::selection {
     background-color: #A24A21;
     color: #F6EBE0;
+  }
+
+  /* Chunky rust focus ring fits the pixel aesthetic and stays visible on cream */
+  :focus-visible {
+    outline: 3px solid #A24A21;
+    outline-offset: 2px;
   }
 }
 
@@ -46,4 +58,102 @@
   .link-quiet {
     @apply underline decoration-1 underline-offset-4 decoration-clay/60 hover:decoration-rust hover:text-rust transition-colors duration-200;
   }
+
+  /* Game dialog box: parchment surface, 3px ink border with notched
+     (pixel-rounded) corners, hard offset shadow. The border is drawn with
+     box-shadow so the corner pixels stay square-cut. */
+  .pixel-panel {
+    @apply bg-parchment relative;
+    box-shadow:
+      0 -3px 0 0 #43261A,
+      0 3px 0 0 #43261A,
+      -3px 0 0 0 #43261A,
+      3px 0 0 0 #43261A,
+      6px 9px 0 0 rgba(67, 38, 26, 0.18);
+  }
+
+  .pixel-panel-dark {
+    @apply bg-ember relative;
+    box-shadow:
+      0 -3px 0 0 #EEDFD1,
+      0 3px 0 0 #EEDFD1,
+      -3px 0 0 0 #EEDFD1,
+      3px 0 0 0 #EEDFD1,
+      6px 9px 0 0 rgba(0, 0, 0, 0.25);
+  }
+
+  /* Chunky game button: hard shadow that the button "presses into" on click */
+  .pixel-btn {
+    @apply inline-flex items-center justify-center gap-2 font-mono text-xs uppercase tracking-[0.14em] px-6 py-[0.875rem] transition-none select-none;
+    box-shadow: 4px 4px 0 0 #43261A;
+  }
+
+  .pixel-btn:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 3px 3px 0 0 #43261A;
+  }
+
+  .pixel-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 0 #43261A;
+  }
+
+  .pixel-btn-rust {
+    @apply pixel-btn bg-rust text-linen border-2 border-ink;
+  }
+
+  .pixel-btn-parchment {
+    @apply pixel-btn bg-parchment text-ink border-2 border-ink;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pixel-btn:hover,
+    .pixel-btn:active {
+      transform: none;
+    }
+  }
+}
+
+@layer utilities {
+  .pixelated {
+    image-rendering: pixelated;
+  }
+
+  /* Retro cursor blink: hard on/off, no fade */
+  .animate-px-blink {
+    animation: px-blink 1.1s steps(1) infinite;
+  }
+
+  /* Two-position idle bob, stepped so it reads as sprite animation */
+  .animate-px-bob {
+    animation: px-bob 0.9s steps(2, jump-none) infinite;
+  }
+
+  /* Softer, slower blink for persistent prompts */
+  .animate-px-blink-slow {
+    animation: px-blink-slow 1.6s steps(1) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-px-blink,
+    .animate-px-blink-slow,
+    .animate-px-bob {
+      animation: none;
+    }
+  }
+}
+
+@keyframes px-blink-slow {
+  0%, 70% { opacity: 1; }
+  71%, 100% { opacity: 0.45; }
+}
+
+@keyframes px-blink {
+  0%, 55% { opacity: 1; }
+  56%, 100% { opacity: 0; }
+}
+
+@keyframes px-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
 }
