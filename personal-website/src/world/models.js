@@ -1,8 +1,4 @@
 import {
-  AVATAR_IDLE,
-  AVATAR_WALK_A,
-  AVATAR_WALK_B,
-  AVATAR_SIT,
   HOUSE,
   PINE,
   MAILBOX,
@@ -18,11 +14,61 @@ import { extrudeSprite, crossExtrude, solid, translate, merge } from './voxel'
 // All world models as voxel lists. Sprites extrude straight from the 2D
 // journey's art; purpose-built structures are assembled from solids.
 
-export const PLAYER_FRAMES = {
-  idle: extrudeSprite(AVATAR_IDLE, { depth: 2 }),
-  walkA: extrudeSprite(AVATAR_WALK_A, { depth: 2 }),
-  walkB: extrudeSprite(AVATAR_WALK_B, { depth: 2 }),
-  sit: extrudeSprite(AVATAR_SIT, { depth: 2 }),
+// ------------------------------------------------- articulated character ---
+// Integer-grid box painter: later boxes overwrite earlier voxels at the same
+// cell, so hair can cap and wrap the skin without z-fighting. Ranges are
+// [from, to) in voxel units.
+function paint(...boxes) {
+  const grid = new Map()
+  for (const [xr, yr, zr, c] of boxes) {
+    for (let x = xr[0]; x < xr[1]; x++) {
+      for (let y = yr[0]; y < yr[1]; y++) {
+        for (let z = zr[0]; z < zr[1]; z++) {
+          grid.set(`${x},${y},${z}`, { x, y, z, c })
+        }
+      }
+    }
+  }
+  return [...grid.values()]
+}
+
+const SKIN = '#E8B48C'
+const HAIR = '#43261A'
+const HOODIE = '#A24A21'
+const HOODIE_DARK = '#7E3616'
+const PANTS = '#5F4037'
+const SHOE = '#43261A'
+
+// A real 3D body, one voxel list per limb, each built around its own pivot
+// so plain rotation.x swings it. Character front is +z: the face only exists
+// on the front layer, the back of the head is all hair.
+export const PLAYER_PARTS = {
+  // pivot at neck; head spans y 0..7 (hair cap on top)
+  head: paint(
+    [[-3, 3], [0, 6], [-2, 3], SKIN],
+    [[-3, 3], [5, 7], [-2, 3], HAIR], // cap (replaces top skin row)
+    [[-3, 3], [0, 7], [-2, -1], HAIR], // back of head
+    [[-3, -2], [3, 7], [-2, 3], HAIR], // left fringe
+    [[2, 3], [3, 7], [-2, 3], HAIR], // right fringe
+    [[-2, -1], [2, 3], [2, 3], HAIR], // left eye (front face only)
+    [[1, 2], [2, 3], [2, 3], HAIR] // right eye
+  ),
+  // pivot at hip; torso spans y 0..7
+  torso: paint(
+    [[-4, 4], [0, 7], [-2, 3], HOODIE],
+    [[-3, 3], [4, 7], [-3, -2], HOODIE_DARK], // hood resting on the back
+    [[-2, 2], [1, 3], [3, 4], HOODIE_DARK] // front pocket
+  ),
+  // pivot at shoulder; hangs to y -6 (sleeve + skin hand)
+  arm: paint(
+    [[-1, 1], [-4, 0], [-1, 1], HOODIE],
+    [[-1, 1], [-6, -4], [-1, 1], SKIN]
+  ),
+  // pivot at hip; hangs to y -5, shoe toe pokes forward
+  leg: paint(
+    [[-1, 1], [-4, 0], [-1, 1], PANTS],
+    [[-1, 1], [-5, -4], [-1, 2], SHOE]
+  ),
 }
 
 export const HOUSE_MODEL = extrudeSprite(HOUSE, { depth: 10 })

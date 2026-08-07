@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { Navigate } from 'react-router-dom'
 import { Canvas } from '@react-three/fiber'
 import { World } from './World'
@@ -17,7 +17,8 @@ function supportsWebGL() {
 }
 
 function WorldStage() {
-  const { inputRef, nearStation, openPanel, setOpenPanel } = useWorld()
+  const { inputRef, nearStation, openPanel, setOpenPanel, camDragRef } = useWorld()
+  const dragState = useRef(null)
 
   const onInteract = useCallback(() => {
     if (nearStation) setOpenPanel(nearStation)
@@ -25,12 +26,36 @@ function WorldStage() {
 
   useKeyboardInput(inputRef, { enabled: !openPanel, onInteract })
 
+  // drag-to-look: orbit the camera; offsets ease back once you walk
+  const onPointerDown = (e) => {
+    if (e.target.closest('button, a, [role="dialog"]')) return
+    dragState.current = { x: e.clientX, y: e.clientY }
+  }
+  const onPointerMove = (e) => {
+    const start = dragState.current
+    if (!start) return
+    const drag = camDragRef.current
+    drag.yawOff -= (e.clientX - start.x) * 0.006
+    drag.pitchOff = Math.max(-2.4, Math.min(4.5, drag.pitchOff + (e.clientY - start.y) * 0.02))
+    dragState.current = { x: e.clientX, y: e.clientY }
+  }
+  const endDrag = () => {
+    dragState.current = null
+  }
+
   return (
-    <div className="fixed inset-0 bg-cream">
+    <div
+      className="fixed inset-0 bg-cream touch-none"
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={endDrag}
+      onPointerLeave={endDrag}
+      onPointerCancel={endDrag}
+    >
       <Canvas
         shadows
         dpr={[1, 2]}
-        camera={{ fov: 42, position: [0, 9, 12], near: 0.5, far: 140 }}
+        camera={{ fov: 42, position: [0, 4.2, 9.5], near: 0.5, far: 160 }}
       >
         <World />
       </Canvas>

@@ -145,7 +145,7 @@ export function World() {
   return (
     <>
       <color attach="background" args={['#F6EBE0']} />
-      <fog attach="fog" args={['#F6EBE0', 24, 70]} />
+      <fog attach="fog" args={['#F6EBE0', 26, 85]} />
       <ambientLight intensity={0.85} color="#FFF6EA" />
       <hemisphereLight args={['#FFF6EA', '#C9A188', 0.4]} />
 

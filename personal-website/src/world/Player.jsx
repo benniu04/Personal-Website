@@ -2,26 +2,41 @@ import { useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { VoxelModel } from './VoxelModel'
-import { PLAYER_FRAMES } from './models'
+import { PLAYER_PARTS } from './models'
 import { STATIONS, WORLD_BOUNDS, PLAYER_SPAWN } from './stations'
 import { useWorld } from './WorldContext'
 
 const SPEED = 7
-const VOXEL = 0.17 // avatar ≈ 2.7 units tall
-const CAM_OFFSET = new THREE.Vector3(0, 9, 11)
-const camTarget = new THREE.Vector3()
+const V = 0.15 // voxel edge in world units; character ≈ 2.8u tall
+const HIP_Y = 5 * V
+const SHOULDER_Y = HIP_Y + 6 * V
+const NECK_Y = HIP_Y + 7 * V
+
+const CAM_DIST = 8.5
+const CAM_HEIGHT = 4.2
+const camPos = new THREE.Vector3()
 const lookTarget = new THREE.Vector3()
 
-// The drivable traveler. Movement, collision, walk animation, camera follow
-// and the moving shadow light all live in one useFrame — no React re-renders.
+const shortestAngle = (delta) => {
+  while (delta > Math.PI) delta -= Math.PI * 2
+  while (delta < -Math.PI) delta += Math.PI * 2
+  return delta
+}
+
+// The drivable traveler: an articulated voxel body (limbs swing while
+// walking) with an open-world follow camera that swings around to stay
+// behind wherever the character is heading. Controls are camera-relative.
 export function Player() {
-  const { inputRef, playerRef, nearStation, setNearStation, openPanel } = useWorld()
+  const { inputRef, playerRef, nearStation, setNearStation, openPanel, camDragRef } = useWorld()
   const groupRef = useRef(null)
-  const idleRef = useRef(null)
-  const walkARef = useRef(null)
-  const walkBRef = useRef(null)
+  const armLRef = useRef(null)
+  const armRRef = useRef(null)
+  const legLRef = useRef(null)
+  const legRRef = useRef(null)
   const lightRef = useRef(null)
   const walkClock = useRef(0)
+  const swingAmp = useRef(0)
+  const camYaw = useRef(Math.PI)
   const nearRef = useRef(null)
   const { camera } = useThree()
 
@@ -30,12 +45,19 @@ export function Player() {
   useFrame((_, rawDt) => {
     const dt = Math.min(rawDt, 0.1)
     const player = playerRef.current
+    const drag = camDragRef.current
     const input = openPanel ? { x: 0, z: 0 } : inputRef.current
     const moving = input.x !== 0 || input.z !== 0
 
-    // integrate + clamp to world bounds
-    player.x = THREE.MathUtils.clamp(player.x + input.x * SPEED * dt, WORLD_BOUNDS.minX, WORLD_BOUNDS.maxX)
-    player.z = THREE.MathUtils.clamp(player.z + input.z * SPEED * dt, WORLD_BOUNDS.minZ, WORLD_BOUNDS.maxZ)
+    // camera-relative input: W walks away from the camera, A/D carve turns
+    const effYaw = camYaw.current + drag.yawOff
+    const cosY = Math.cos(effYaw)
+    const sinY = Math.sin(effYaw)
+    const moveX = -input.x * cosY - input.z * sinY
+    const moveZ = input.x * sinY - input.z * cosY
+
+    player.x = THREE.MathUtils.clamp(player.x + moveX * SPEED * dt, WORLD_BOUNDS.minX, WORLD_BOUNDS.maxX)
+    player.z = THREE.MathUtils.clamp(player.z + moveZ * SPEED * dt, WORLD_BOUNDS.minZ, WORLD_BOUNDS.maxZ)
 
     // circle colliders: push out of station props
     for (const station of STATIONS) {
@@ -48,28 +70,29 @@ export function Player() {
       }
     }
 
-    // face where we're going (paper-doll yaw; model front is +z)
+    // face where we're going (model front is +z)
     if (moving) {
-      const targetYaw = Math.atan2(input.x, input.z)
-      let delta = targetYaw - player.yaw
-      while (delta > Math.PI) delta -= Math.PI * 2
-      while (delta < -Math.PI) delta += Math.PI * 2
-      player.yaw += delta * Math.min(1, dt * 12)
+      const targetYaw = Math.atan2(moveX, moveZ)
+      player.yaw += shortestAngle(targetYaw - player.yaw) * Math.min(1, dt * 12)
     }
     player.moving = moving
 
+    // limb swing: amplitude eases in/out, phase runs while walking
+    walkClock.current += (moving ? dt : 0)
+    const targetAmp = moving ? 0.8 : 0
+    swingAmp.current += (targetAmp - swingAmp.current) * Math.min(1, dt * 8)
+    const amp = swingAmp.current
+    const swing = Math.sin(walkClock.current * 9.5) * amp
+    if (legLRef.current) legLRef.current.rotation.x = swing
+    if (legRRef.current) legRRef.current.rotation.x = -swing
+    if (armLRef.current) armLRef.current.rotation.x = -swing * 0.8
+    if (armRRef.current) armRRef.current.rotation.x = swing * 0.8
+
     const group = groupRef.current
     if (group) {
-      group.position.set(player.x, 0, player.z)
+      group.position.set(player.x, Math.abs(Math.cos(walkClock.current * 9.5)) * 0.06 * amp, player.z)
       group.rotation.y = player.yaw
     }
-
-    // 3-frame walk cycle
-    walkClock.current = moving ? walkClock.current + dt : 0
-    const phase = moving ? Math.floor(walkClock.current / 0.14) % 4 : -1
-    if (idleRef.current) idleRef.current.visible = phase === -1 || phase === 1 || phase === 3
-    if (walkARef.current) walkARef.current.visible = phase === 0
-    if (walkBRef.current) walkBRef.current.visible = phase === 2
 
     // nearest station within prompt range
     let nearest = null
@@ -86,10 +109,22 @@ export function Player() {
       setNearStation(nearest)
     }
 
-    // camera follow with soft lag
-    camTarget.set(player.x, 0, player.z).add(CAM_OFFSET)
-    camera.position.lerp(camTarget, 1 - Math.pow(0.0005, dt))
-    lookTarget.set(player.x, 1.6, player.z)
+    // follow camera: swing around behind the heading while moving; drag-look
+    // offsets ease back to zero once you walk
+    if (moving) {
+      camYaw.current += shortestAngle(player.yaw - camYaw.current) * Math.min(1, dt * 2.5)
+      drag.yawOff += (0 - drag.yawOff) * Math.min(1, dt * 3)
+      drag.pitchOff += (0 - drag.pitchOff) * Math.min(1, dt * 3)
+    }
+    const viewYaw = camYaw.current + drag.yawOff
+    const height = THREE.MathUtils.clamp(CAM_HEIGHT + drag.pitchOff, 1.6, 9)
+    camPos.set(
+      player.x - Math.sin(viewYaw) * CAM_DIST,
+      height,
+      player.z - Math.cos(viewYaw) * CAM_DIST
+    )
+    camera.position.lerp(camPos, 1 - Math.pow(0.0005, dt))
+    lookTarget.set(player.x, 2.1, player.z)
     camera.lookAt(lookTarget)
 
     // shadow light rides along so its frustum stays tight
@@ -104,14 +139,23 @@ export function Player() {
   return (
     <>
       <group ref={groupRef} position={PLAYER_SPAWN}>
-        <group ref={idleRef}>
-          <VoxelModel voxels={PLAYER_FRAMES.idle} size={VOXEL} />
+        <group position={[0, HIP_Y, 0]}>
+          <VoxelModel voxels={PLAYER_PARTS.torso} size={V} />
         </group>
-        <group ref={walkARef} visible={false}>
-          <VoxelModel voxels={PLAYER_FRAMES.walkA} size={VOXEL} />
+        <group position={[0, NECK_Y, 0]}>
+          <VoxelModel voxels={PLAYER_PARTS.head} size={V} />
         </group>
-        <group ref={walkBRef} visible={false}>
-          <VoxelModel voxels={PLAYER_FRAMES.walkB} size={VOXEL} />
+        <group ref={armLRef} position={[-5 * V, SHOULDER_Y, 0]}>
+          <VoxelModel voxels={PLAYER_PARTS.arm} size={V} />
+        </group>
+        <group ref={armRRef} position={[5 * V, SHOULDER_Y, 0]}>
+          <VoxelModel voxels={PLAYER_PARTS.arm} size={V} />
+        </group>
+        <group ref={legLRef} position={[-2 * V, HIP_Y, 0]}>
+          <VoxelModel voxels={PLAYER_PARTS.leg} size={V} />
+        </group>
+        <group ref={legRRef} position={[2 * V, HIP_Y, 0]}>
+          <VoxelModel voxels={PLAYER_PARTS.leg} size={V} />
         </group>
       </group>
       <directionalLight
