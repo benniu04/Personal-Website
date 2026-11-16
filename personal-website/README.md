@@ -3,7 +3,7 @@
 A single page where scrolling carries a camera around a small low-poly island, each stop
 revealing a section: about, experience, projects, off the clock, contact.
 
-Live: https://personal-website-actual.vercel.app/
+Live: https://benniu.dev/
 
 ## Run
 
