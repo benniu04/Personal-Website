@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <clipPath id="tile"><rect width="64" height="64" rx="14"/></clipPath>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#CFE1EC"/>
+      <stop offset="1" stop-color="#FBE6D6"/>
+    </linearGradient>
+  </defs>
+  <g clip-path="url(#tile)">
+    <rect width="64" height="64" fill="url(#sky)"/>
+    <circle cx="47" cy="19" r="7" fill="#FFF6E6"/>
+    <!-- sea -->
+    <rect y="45" width="64" height="19" fill="#A9CFD2"/>
+    <!-- island: beach, hill and its shaded facet -->
+    <path d="M5 47 Q32 39 59 47 Q32 53 5 47Z" fill="#EBDFC0"/>
+    <path d="M10 46 L29 18 L39 33 L46 28 L56 46Z" fill="#A9C98F"/>
+    <path d="M29 18 L39 33 L34 46 L24 46Z" fill="#8DB57C"/>
+    <!-- summit flag -->
+    <rect x="28" y="7" width="2.6" height="12" rx="1" fill="#3A4145"/>
+    <path d="M30.6 7.5 L42 11 L30.6 14.5Z" fill="#E2613F"/>
+  </g>
+</svg>
