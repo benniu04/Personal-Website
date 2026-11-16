@@ -5,19 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && vite build --ssr src/entry-server.jsx --outDir dist-ssr && node scripts/prerender.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.7.0",
-    "clsx": "^2.1.1",
-    "motion": "^12.20.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.3",
-    "tailwind-merge": "^3.3.1",
     "three": "^0.185.1"
   },
   "devDependencies": {

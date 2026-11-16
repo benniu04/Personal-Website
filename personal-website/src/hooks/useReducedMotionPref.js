@@ -1,9 +1,13 @@
-import { useReducedMotion } from 'motion/react'
+import { useSyncExternalStore } from 'react'
 
-// Single import point for the reduced-motion preference, so every journey
-// component gates its motion the same way.
-export function useReducedMotionPref() {
-  return useReducedMotion()
+const QUERY = '(prefers-reduced-motion: reduce)'
+
+function subscribe(fn) {
+  const mq = window.matchMedia(QUERY)
+  mq.addEventListener('change', fn)
+  return () => mq.removeEventListener('change', fn)
 }
 
-export default useReducedMotionPref
+export function useReducedMotionPref() {
+  return useSyncExternalStore(subscribe, () => window.matchMedia(QUERY).matches, () => false)
+}
