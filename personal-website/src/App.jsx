@@ -1,62 +1,37 @@
-import { lazy, Suspense, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import JourneyPage from './journey/JourneyPage'
-import ProjectDetail from './pages/ProjectDetail'
-import './App.css'
+import { useEffect } from 'react'
+import Backdrop from './components/Backdrop.jsx'
+import SiteNav from './components/SiteNav.jsx'
+import SkipLink from './components/SkipLink.jsx'
+import About from './sections/About.jsx'
+import Contact from './sections/Contact.jsx'
+import Experience from './sections/Experience.jsx'
+import Hero from './sections/Hero.jsx'
+import OffTheClock from './sections/OffTheClock.jsx'
+import Projects from './sections/Projects.jsx'
 
-// The 3D world pulls in three.js — keep it out of the 2D journey's bundle.
-const WorldPage = lazy(() => import('./world/WorldPage'))
-
-function WorldLoading() {
-  return (
-    <div className="fixed inset-0 bg-cream flex items-center justify-center">
-      <p className="font-pixel text-sm uppercase tracking-[0.1em] text-ink animate-px-blink">
-        Loading world…
-      </p>
-    </div>
-  )
-}
-
-// Scrolls to the hash target when one is present (e.g. redirects from old
-// routes land on /#projects), otherwise resets to the top on navigation.
-function ScrollManager() {
-  const { pathname, hash } = useLocation()
+export default function App() {
+  // Land on the right stop when the page is opened with a #hash
   useEffect(() => {
-    if (hash) {
-      const el = document.getElementById(hash.slice(1))
-      if (el) {
-        el.scrollIntoView()
-        return
-      }
-    }
-    window.scrollTo(0, 0)
-  }, [pathname, hash])
-  return null
-}
+    const id = decodeURIComponent(window.location.hash.slice(1))
+    if (id) document.getElementById(id)?.scrollIntoView()
+  }, [])
 
-function App() {
   return (
-    <BrowserRouter>
-      <ScrollManager />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Suspense fallback={<WorldLoading />}>
-              <WorldPage />
-            </Suspense>
-          }
-        />
-        <Route path="/journey" element={<JourneyPage />} />
-        <Route path="/work/:slug" element={<ProjectDetail />} />
-        {/* Old routes live on as fast-travel points into the 2D journey */}
-        <Route path="/work" element={<Navigate to="/journey#projects" replace />} />
-        <Route path="/experience" element={<Navigate to="/journey#experience" replace />} />
-        <Route path="/about" element={<Navigate to="/journey#boston" replace />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <SkipLink />
+      <Backdrop />
+      <SiteNav />
+      <div className="relative z-10">
+        <Hero />
+        <main>
+          <About />
+          <Experience />
+          <Projects />
+          <OffTheClock />
+          <Contact />
+        </main>
+        <div className="h-[30svh]" aria-hidden="true" />
+      </div>
+    </>
   )
 }
-
-export default App

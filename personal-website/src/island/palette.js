@@ -1,0 +1,45 @@
+export const COLORS = {
+  sand: '#EBDFC0',
+  sandLight: '#F2E8CF',
+  wetSand: '#D8CAA5',
+  dirt: '#D2C29D',
+  grass: '#A9C98F',
+  grassDeep: '#8DB57C',
+  grassDry: '#C5CB92',
+  grassHigh: '#B9C9A2',
+  rock: '#BFBAAE',
+  rockDark: '#A6A196',
+  stone: '#D6D2C8',
+  wall: '#F6F2EA',
+  wood: '#B99672',
+  woodDark: '#8A6B50',
+  bark: '#7C6350',
+  birch: '#EDE9DF',
+  coral: '#E2765A', // the accent, as paint
+  slate: '#9FB0B6',
+  dark: '#3A4145',
+  glass: '#BBD8DC',
+  glow: '#FFE7A6',
+  leaf: '#7FAE7A',
+  leafLight: '#98C08C',
+  leafDark: '#6B9B6D',
+  leafBirch: '#B4CB86',
+  court: '#8FBFAD',
+  green: '#9CCB93',
+  white: '#FFFFFF',
+  flame: '#F4A259',
+  flameCore: '#FFDC8E',
+  cloud: '#FFFFFF',
+  shallows: '#DDF1EC',
+}
+
+// Sky, light and sea at each stop: dawn on arrival, pale dusk at the campfire.
+// Everything stays light so near-black text keeps its contrast throughout.
+export const ATMOSPHERE = [
+  { top: '#D4E2EC', horizon: '#F9EBDD', sea: '#C4DDDD', sun: '#FFE9D2', sunPos: [40, 22, 34], dir: 1.75, hemi: 1.55 },
+  { top: '#CBE1EF', horizon: '#F5F1E7', sea: '#BDDBDD', sun: '#FFF4E6', sunPos: [30, 34, 30], dir: 1.9, hemi: 1.55 },
+  { top: '#C2DDEF', horizon: '#EEF3F1', sea: '#B8D9DE', sun: '#FFFFFF', sunPos: [10, 46, 26], dir: 2.0, hemi: 1.55 },
+  { top: '#C8DFEC', horizon: '#F4F0E5', sea: '#BCD9DB', sun: '#FFF6E8', sunPos: [24, 36, 16], dir: 1.9, hemi: 1.55 },
+  { top: '#D3DCE9', horizon: '#F9E7D4', sea: '#C4D8DC', sun: '#FFE6C8', sunPos: [30, 26, 4], dir: 1.75, hemi: 1.65 },
+  { top: '#CFD0E6', horizon: '#FBDDCB', sea: '#CDD5E2', sun: '#FFDDBE', sunPos: [34, 26, -8], dir: 1.7, hemi: 2.0 },
+]
