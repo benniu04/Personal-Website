@@ -19,18 +19,6 @@ export const projects = [
     tools: ['Go', 'Kafka', 'PostgreSQL', 'React', 'TypeScript', 'WebSocket'],
   },
   {
-    slug: 'stock-prediction',
-    title: 'Stock Price Prediction and Trading',
-    description:
-      'A dashboard that visualizes the performance of a stock price prediction model and allows for automated trading decisions (model performance still needs to be improved).',
-    url: 'https://github.com/benniu04/StockPrediction',
-    linkLabel: 'View on GitHub',
-    role: 'Personal Project',
-    timeline: '3 months',
-    tools: ['Python', 'scikit-learn', 'pandas', 'numpy', 'matplotlib', 'seaborn', 'yfinance', 'ta-lib'],
-    cover: { src: '/images/stock-trading-dashboard.webp', width: 1200, height: 527, alt: 'Stock prediction dashboard with price charts and trading signals' },
-  },
-  {
     slug: 'nema',
     title: 'NEMA',
     description: 'Co-creating NEMA, a streaming platform dedicated for smaller indie filmmakers to showcase their work.',
@@ -52,13 +40,5 @@ export const projects = [
     timeline: 'In Progress',
     tools: ['React', 'Node.js', 'Tailwind CSS', 'Vercel', 'OpenAI', 'Perlin noise', 'Python', 'FastAPI'],
     cover: { src: '/images/voice-agent.webp', width: 1200, height: 667, alt: 'Voice Agent interface showing a Perlin noise field' },
-  },
-  {
-    slug: 'secret-app',
-    title: 'Startup App',
-    description: 'Top secret, and in progress.',
-    role: 'Co-Founder',
-    timeline: 'In Progress',
-    tools: [],
   },
 ]
